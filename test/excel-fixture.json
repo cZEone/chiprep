@@ -1,0 +1,511 @@
+{
+ "players": [
+  "Hui",
+  "Verb",
+  "Derek",
+  "Hong"
+ ],
+ "rows": [
+  {
+   "winner": "Hong",
+   "thrower": "ZIMO",
+   "tai": 1.0,
+   "expected": [
+    -2,
+    -2,
+    -2,
+    6
+   ]
+  },
+  {
+   "winner": "Hong",
+   "thrower": "Derek",
+   "tai": 3.0,
+   "expected": [
+    -3,
+    -3,
+    -5,
+    11
+   ]
+  },
+  {
+   "winner": "Hong",
+   "thrower": "Hui",
+   "tai": 3.0,
+   "expected": [
+    -5,
+    -3,
+    -3,
+    11
+   ]
+  },
+  {
+   "winner": "Verb",
+   "thrower": "AN GANG",
+   "tai": null,
+   "expected": [
+    -2,
+    6,
+    -2,
+    -2
+   ]
+  },
+  {
+   "winner": "Hui",
+   "thrower": "Verb",
+   "tai": 1.0,
+   "expected": [
+    4,
+    -2,
+    -1,
+    -1
+   ]
+  },
+  {
+   "winner": "Hong",
+   "thrower": "GANG",
+   "tai": null,
+   "expected": [
+    -1,
+    -1,
+    -1,
+    3
+   ]
+  },
+  {
+   "winner": "Derek",
+   "thrower": "Verb",
+   "tai": 1.0,
+   "expected": [
+    -1,
+    -2,
+    4,
+    -1
+   ]
+  },
+  {
+   "winner": "Derek",
+   "thrower": "GANG",
+   "tai": null,
+   "expected": [
+    -1,
+    -1,
+    3,
+    -1
+   ]
+  },
+  {
+   "winner": "Verb",
+   "thrower": "Hui",
+   "tai": 2.0,
+   "expected": [
+    -3,
+    7,
+    -2,
+    -2
+   ]
+  },
+  {
+   "winner": "Derek",
+   "thrower": "Hui",
+   "tai": 4.0,
+   "expected": [
+    -10,
+    -5,
+    20,
+    -5
+   ]
+  },
+  {
+   "winner": "Hui",
+   "thrower": "ZIMO",
+   "tai": 1.0,
+   "expected": [
+    6,
+    -2,
+    -2,
+    -2
+   ]
+  },
+  {
+   "winner": "Hui",
+   "thrower": "GANG",
+   "tai": null,
+   "expected": [
+    3,
+    -1,
+    -1,
+    -1
+   ]
+  },
+  {
+   "winner": "Hong",
+   "thrower": "Hui",
+   "tai": 1.0,
+   "expected": [
+    -2,
+    -1,
+    -1,
+    4
+   ]
+  },
+  {
+   "winner": "Verb",
+   "thrower": "Hui",
+   "tai": 4.0,
+   "expected": [
+    -10,
+    20,
+    -5,
+    -5
+   ]
+  },
+  {
+   "winner": "Derek",
+   "thrower": "GANG",
+   "tai": null,
+   "expected": [
+    -1,
+    -1,
+    3,
+    -1
+   ]
+  },
+  {
+   "winner": "Verb",
+   "thrower": "Hong",
+   "tai": 3.0,
+   "expected": [
+    -3,
+    11,
+    -3,
+    -5
+   ]
+  },
+  {
+   "winner": "Hong",
+   "thrower": "GANG",
+   "tai": null,
+   "expected": [
+    -1,
+    -1,
+    -1,
+    3
+   ]
+  },
+  {
+   "winner": "Hong",
+   "thrower": "Verb",
+   "tai": 3.0,
+   "expected": [
+    -3,
+    -5,
+    -3,
+    11
+   ]
+  },
+  {
+   "winner": "Derek",
+   "thrower": "GANG",
+   "tai": null,
+   "expected": [
+    -1,
+    -1,
+    3,
+    -1
+   ]
+  },
+  {
+   "winner": "Verb",
+   "thrower": "Hong",
+   "tai": 2.0,
+   "expected": [
+    -2,
+    7,
+    -2,
+    -3
+   ]
+  },
+  {
+   "winner": "Hui",
+   "thrower": "Hong",
+   "tai": 1.0,
+   "expected": [
+    4,
+    -1,
+    -1,
+    -2
+   ]
+  },
+  {
+   "winner": "Verb",
+   "thrower": "Derek",
+   "tai": 2.0,
+   "expected": [
+    -2,
+    7,
+    -3,
+    -2
+   ]
+  },
+  {
+   "winner": "Hong",
+   "thrower": "Derek",
+   "tai": 2.0,
+   "expected": [
+    -2,
+    -2,
+    -3,
+    7
+   ]
+  },
+  {
+   "winner": "Verb",
+   "thrower": "GANG",
+   "tai": null,
+   "expected": [
+    -1,
+    3,
+    -1,
+    -1
+   ]
+  },
+  {
+   "winner": "Derek",
+   "thrower": "GANG",
+   "tai": null,
+   "expected": [
+    -1,
+    -1,
+    3,
+    -1
+   ]
+  },
+  {
+   "winner": "Derek",
+   "thrower": "ZIMO",
+   "tai": 4.0,
+   "expected": [
+    -10,
+    -10,
+    30,
+    -10
+   ]
+  },
+  {
+   "winner": "Verb",
+   "thrower": "ZIMO",
+   "tai": 4.0,
+   "expected": [
+    -10,
+    30,
+    -10,
+    -10
+   ]
+  },
+  {
+   "winner": "Hong",
+   "thrower": "GANG",
+   "tai": null,
+   "expected": [
+    -1,
+    -1,
+    -1,
+    3
+   ]
+  },
+  {
+   "winner": "Derek",
+   "thrower": "GANG",
+   "tai": null,
+   "expected": [
+    -1,
+    -1,
+    3,
+    -1
+   ]
+  },
+  {
+   "winner": "Hong",
+   "thrower": "Derek",
+   "tai": 2.0,
+   "expected": [
+    -2,
+    -2,
+    -3,
+    7
+   ]
+  },
+  {
+   "winner": "Derek",
+   "thrower": "GANG",
+   "tai": null,
+   "expected": [
+    -1,
+    -1,
+    3,
+    -1
+   ]
+  },
+  {
+   "winner": "Hui",
+   "thrower": "Verb",
+   "tai": 2.0,
+   "expected": [
+    7,
+    -3,
+    -2,
+    -2
+   ]
+  },
+  {
+   "winner": "Hui",
+   "thrower": "AN GANG",
+   "tai": null,
+   "expected": [
+    6,
+    -2,
+    -2,
+    -2
+   ]
+  },
+  {
+   "winner": "Derek",
+   "thrower": "AN GANG",
+   "tai": null,
+   "expected": [
+    -2,
+    -2,
+    6,
+    -2
+   ]
+  },
+  {
+   "winner": "Verb",
+   "thrower": "GANG",
+   "tai": null,
+   "expected": [
+    -1,
+    3,
+    -1,
+    -1
+   ]
+  },
+  {
+   "winner": "Hui",
+   "thrower": "Derek",
+   "tai": 4.0,
+   "expected": [
+    20,
+    -5,
+    -10,
+    -5
+   ]
+  },
+  {
+   "winner": "Derek",
+   "thrower": "GANG",
+   "tai": null,
+   "expected": [
+    -1,
+    -1,
+    3,
+    -1
+   ]
+  },
+  {
+   "winner": "Hui",
+   "thrower": "GANG",
+   "tai": null,
+   "expected": [
+    3,
+    -1,
+    -1,
+    -1
+   ]
+  },
+  {
+   "winner": "Hui",
+   "thrower": "Verb",
+   "tai": 5.0,
+   "expected": [
+    40,
+    -20,
+    -10,
+    -10
+   ]
+  },
+  {
+   "winner": "Verb",
+   "thrower": "GANG",
+   "tai": null,
+   "expected": [
+    -1,
+    3,
+    -1,
+    -1
+   ]
+  },
+  {
+   "winner": "Hui",
+   "thrower": "Hong",
+   "tai": 2.0,
+   "expected": [
+    7,
+    -2,
+    -2,
+    -3
+   ]
+  },
+  {
+   "winner": "Hui",
+   "thrower": "GANG",
+   "tai": null,
+   "expected": [
+    3,
+    -1,
+    -1,
+    -1
+   ]
+  },
+  {
+   "winner": "Derek",
+   "thrower": "Verb",
+   "tai": 1.0,
+   "expected": [
+    -1,
+    -2,
+    4,
+    -1
+   ]
+  },
+  {
+   "winner": "Hui",
+   "thrower": "GANG",
+   "tai": null,
+   "expected": [
+    3,
+    -1,
+    -1,
+    -1
+   ]
+  },
+  {
+   "winner": "Hui",
+   "thrower": "Derek",
+   "tai": 3.0,
+   "expected": [
+    11,
+    -3,
+    -5,
+    -3
+   ]
+  }
+ ],
+ "totals": [
+  29,
+  4,
+  -7,
+  -26
+ ]
+}
