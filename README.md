@@ -29,3 +29,9 @@ Data is saved in the browser's local storage on that device.
 ## Tests
 
 `node test/calc.test.js` replays all 45 rows of the original spreadsheet (v2.6) and checks every result and the final totals.
+
+## Publishing updates
+
+After changing `style.css`, `calc.js` or `app.js`, run `./bump-version.sh` before committing.
+It puts a new `?v=` version number on those files in `index.html`, so phones that loaded an old copy fetch the new files.
+Saved nights are kept: they live in the browser's local storage, which updates don't touch.
