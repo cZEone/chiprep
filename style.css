@@ -370,3 +370,18 @@ th .av { margin: 0 auto 4px; display: grid; }
 @keyframes sheet-up { from { transform: translateY(40px); opacity: .6; } }
 @keyframes fade-in { from { opacity: 0; } }
 @media (max-width: 360px) { .die { width: 66px; height: 66px; padding: 9px; } .die span.pip { width: 11px; height: 11px; } }
+
+/* ---------- Shooter mode ---------- */
+.pill.shooter { background: rgba(255, 196, 92, .22); border-color: rgba(255, 196, 92, .45); }
+.toggle-card { display: flex; align-items: center; gap: 14px; }
+.toggle-card .toggle-text { flex: 1; min-width: 0; }
+.switch {
+  flex: none; width: 52px; height: 32px; border-radius: 999px; padding: 3px;
+  border: 0; background: var(--border); position: relative; transition: background-color .15s ease;
+}
+.switch span {
+  display: block; width: 26px; height: 26px; border-radius: 50%; background: #fff;
+  box-shadow: 0 1px 3px rgba(0,0,0,.3); transition: transform .15s ease;
+}
+.switch[aria-checked="true"] { background: var(--accent); }
+.switch[aria-checked="true"] span { transform: translateX(20px); }

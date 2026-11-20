@@ -34,6 +34,11 @@ assert.deepStrictEqual(MJ.computeDeltas(settings, { type: 'zhahu', player: 3 }),
 // 0.1/0.2 preset: 5 tai discard = 2 x 1.6 + 3.2 = 6.40, no float drift
 const s2 = { rates: MJ.PRESETS['0.1/0.2'].rates, gang: 0.1, angang: 0.2 };
 assert.deepStrictEqual(MJ.computeDeltas(s2, { type: 'discard', player: 0, thrower: 1, tai: 5 }), [640, -320, -160, -160]);
+// Shooter mode: 3 tai discard, thrower pays $5 + $3 + $3 = $11 alone
+assert.deepStrictEqual(MJ.computeDeltas(settings, { type: 'discard', player: 0, thrower: 1, tai: 3, shooter: true }), [1100, -1100, 0, 0]);
+// Shooter mode does not change 自摸 or 杠
+assert.deepStrictEqual(MJ.computeDeltas(settings, { type: 'zimo', player: 0, tai: 1, shooter: true }), [600, -200, -200, -200]);
+assert.deepStrictEqual(MJ.computeDeltas(settings, { type: 'gang', player: 2, shooter: true }), [-100, -100, 300, -100]);
 // Validation
 assert.throws(() => MJ.computeDeltas(settings, { type: 'discard', player: 0, thrower: 0, tai: 1 }));
 assert.throws(() => MJ.computeDeltas(settings, { type: 'zimo', player: 0 }));

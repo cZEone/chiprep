@@ -35,7 +35,8 @@
   /**
    * Compute the per-player change (in cents) for one event.
    * settings: { rates: [[first, second] x5] (dollars), gang: dollars, angang: dollars }
-   * ev: { type, player, thrower, tai }
+   * ev: { type, player, thrower, tai, shooter }
+   *   shooter = true if the hand was played in shooter mode (thrower pays for all on a discard win)
    *   player  = winner / gang declarer / zha hu offender (index 0-3)
    *   thrower = player who threw the tile (discard, bao, bao limit)
    * Returns an array of 4 integers summing to zero, or throws on invalid input.
@@ -59,10 +60,12 @@
     switch (ev.type) {
       case 'discard':
         // Thrower pays the 2nd rate, the other two pay the 1st rate.
+        // Shooter mode: the thrower also pays the other two players' shares.
         for (i = 0; i < 4; i++) {
           if (i === p) continue;
           var amt = i === thrower ? rate(tai, 1) : rate(tai, 0);
-          d[i] -= amt; d[p] += amt;
+          var payer = ev.shooter ? thrower : i;
+          d[payer] -= amt; d[p] += amt;
         }
         break;
       case 'zimo':

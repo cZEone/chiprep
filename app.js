@@ -32,6 +32,7 @@
     reopen: '<path d="M21 12a9 9 0 1 1-3-6.7L21 8"/><path d="M21 3v5h-5"/>',
     play: '<path d="M7 4.5l12 7.5-12 7.5z"/>',
     calendar: '<rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/>',
+    target: '<circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1" fill="currentColor"/>',
     check: '<path d="M5 12.5l4.5 4.5L19 7.5"/>',
   };
   function icon(name, cls) {
@@ -99,10 +100,25 @@
     return '<span class="av c' + i + (size ? ' ' + size : '') + '">' + esc(initial(n.players ? n.players[i] : n[i])) + '</span>';
   }
 
+  // Shooter flag for the hand being recorded: an edited hand keeps its own flag.
+  function shooterOn(n) {
+    if (ui.editingId) {
+      var ev = n.events.find(function (x) { return x.id === ui.editingId; });
+      if (ev) return !!ev.shooter;
+    }
+    return !!n.shooter;
+  }
+  function formEvent(n) {
+    var f = ui.form, t = MJ.TYPES[f.type];
+    var rec = { type: f.type, player: f.player, thrower: t.needsThrower ? f.thrower : null, tai: t.needsTai ? f.tai : null };
+    if (shooterOn(n)) rec.shooter = true; // only discard wins are affected
+    return rec;
+  }
+
   function describe(n, ev) {
     var P = function (i) { return '<b>' + esc(n.players[i]) + '</b>'; };
     switch (ev.type) {
-      case 'discard': return P(ev.player) + ' won off ' + P(ev.thrower);
+      case 'discard': return P(ev.player) + ' won off ' + P(ev.thrower) + (ev.shooter ? ' · shooter' : '');
       case 'zimo': return P(ev.player) + ' 自摸';
       case 'gang': return P(ev.player) + ' 杠';
       case 'angang': return P(ev.player) + ' 暗杠';
@@ -134,7 +150,8 @@
       '<div><h1>MJ Chips</h1><div class="sub">' + dateStr(n.startedAt) + '</div></div>' + DICE_BTN + '</div>';
     h += '<div class="pills"><span class="pill">' + icon('coins') + esc(rateLabel(n)) + '</span>' +
       '<span class="pill">' + icon('tiles') + '杠 ' + money(n.gang) + '</span>' +
-      '<span class="pill">' + icon('tilesHidden') + '暗杠 ' + money(n.angang) + '</span></div>';
+      '<span class="pill">' + icon('tilesHidden') + '暗杠 ' + money(n.angang) + '</span>' +
+      (n.shooter ? '<span class="pill shooter">' + icon('target') + 'Shooter</span>' : '') + '</div>';
     h += '<section class="scores" aria-label="Scores">';
     n.players.forEach(function (p, i) {
       var lead = max > 0 && tot[i] === max;
@@ -214,7 +231,9 @@
     }
 
     var hint = {
-      discard: 'Thrower pays the 2nd rate, the other two pay the 1st rate.',
+      discard: shooterOn(n)
+        ? 'Shooter: thrower pays for everyone, 2nd rate + 2 × 1st rate.'
+        : 'Thrower pays the 2nd rate, the other two pay the 1st rate.',
       zimo: 'All three pay the 2nd rate.',
       gang: 'All three pay ' + money(n.gang) + '.',
       angang: 'All three pay ' + money(n.angang) + '.',
@@ -225,7 +244,7 @@
     h += '<p class="hint">' + icon('info') + '<span>' + hint + '</span></p>';
 
     var deltas = null, err = null;
-    try { deltas = MJ.computeDeltas(settingsOf(n), f); } catch (e) { err = e.message; }
+    try { deltas = MJ.computeDeltas(settingsOf(n), formEvent(n)); } catch (e) { err = e.message; }
     h += '<div class="submitbar"><div class="preview">';
     n.players.forEach(function (p, i) {
       var v = deltas ? deltas[i] : 0;
@@ -313,13 +332,21 @@
       h += '<label class="field"><span>' + avatar(n, i, 'sm') + 'Player ' + (i + 1) + '</span><input type="text" maxlength="16" data-rename="' + i + '" value="' + esc(p) + '"></label>';
     });
     h += '</div>';
-    h += '<p class="small muted" style="margin:0">' + esc(rateLabel(n)) + ' · 杠 ' + money(n.gang) + ' · 暗杠 ' + money(n.angang) +
+    h += '<p class="small muted" style="margin:0">' + esc(rateLabel(n)) + ' · 杠 ' + money(n.gang) + ' · 暗杠 ' + money(n.angang) + (n.shooter ? ' · Shooter' : '') +
       ' · started ' + timeStr(n.startedAt) + '</p>';
     h += rateTableStatic(n.rates) + '</div>';
+    h += shooterCard(!!n.shooter, 'night-shooter', 'Changing this only affects hands recorded afterwards.');
     h += '<button type="button" class="btn block danger" style="margin-top:16px" data-act="end">' + icon('flag') + 'End night</button>';
     h += '<p class="hint" style="justify-content:center">Saves tonight to Past nights and starts a fresh setup.</p>';
     return h;
   }
+  function shooterCard(on, act, note) {
+    return '<div class="card toggle-card"><div class="toggle-text"><div class="section-title" style="margin:0 0 4px">' + icon('target') + 'Shooter mode</div>' +
+      '<div class="small muted">On a discard win the thrower pays for everyone (2nd rate + both 1st-rate shares).' +
+      (note ? ' ' + note : '') + '</div></div>' +
+      '<button type="button" class="switch" role="switch" aria-checked="' + on + '" aria-label="Shooter mode" data-act="' + act + '"><span></span></button></div>';
+  }
+
   function rateTableStatic(rates) {
     var h = '<table><thead><tr><th>台</th><th>1st rate</th><th>2nd rate</th></tr></thead><tbody>';
     rates.forEach(function (r, i) { h += '<tr><td>' + (i + 1) + '</td><td>' + money(r[0]) + '</td><td>' + money(r[1]) + '</td></tr>'; });
@@ -337,6 +364,7 @@
       rates: rates,
       gang: last ? String(last.gang) : String(rates[0][0]),
       angang: last ? String(last.angang) : String(rates[0][1]),
+      shooter: last ? !!last.shooter : false,
       error: '',
     };
   }
@@ -375,6 +403,7 @@
       '<label class="field"><span>暗杠 ($)</span><input inputmode="decimal" data-gang="angang" value="' + esc(s.angang) + '"></label></div>' +
       '<button type="button" class="btn sm" style="margin-top:12px" data-act="gang-default">' + icon('reopen', 'sm') +
       'Use 1 台 rates (' + money(s.rates[0][0]) + ' / ' + money(s.rates[0][1]) + ')</button></div>';
+    h += shooterCard(s.shooter, 'setup-shooter');
     if (s.error) h += '<p class="error">' + icon('alert', 'sm') + esc(s.error) + '</p>';
     h += '<button type="button" class="btn primary block" style="margin-top:16px" data-act="start">' + icon('play') + 'Start night</button>';
 
@@ -414,14 +443,14 @@
     }
     var g = parseMoney(s.gang), ag = parseMoney(s.angang);
     if (g === null || ag === null) { s.error = '杠 and 暗杠 must be positive amounts.'; return render(); }
-    store.current = { id: uid(), startedAt: Date.now(), players: names, presetKey: s.presetKey, rates: rates, gang: g, angang: ag, events: [] };
+    store.current = { id: uid(), startedAt: Date.now(), players: names, presetKey: s.presetKey, rates: rates, gang: g, angang: ag, shooter: !!s.shooter, events: [] };
     ui.setup = null; ui.tab = 'record'; ui.form = blankForm(); ui.editingId = null;
     save(); render(); window.scrollTo(0, 0);
   }
 
   function summaryText(n) {
     var tot = MJ.totals(settingsOf(n), n.events);
-    var lines = ['🀄 Mahjong · ' + dateStr(n.startedAt) + ' · ' + rateLabel(n), ''];
+    var lines = ['🀄 Mahjong · ' + dateStr(n.startedAt) + ' · ' + rateLabel(n) + (n.shooter ? ' · Shooter' : ''), ''];
     n.players.forEach(function (p, i) { lines.push(p + ': ' + fmt(tot[i], true)); });
     var pays = MJ.settle(tot);
     if (pays.length) {
@@ -491,11 +520,11 @@
     switch (d.act) {
       case 'submit': {
         var deltas;
-        try { deltas = MJ.computeDeltas(settingsOf(n), f); } catch (err) { return; }
-        var t = MJ.TYPES[f.type];
-        var rec = { type: f.type, player: f.player, thrower: t.needsThrower ? f.thrower : null, tai: t.needsTai ? f.tai : null };
+        var rec = formEvent(n);
+        try { deltas = MJ.computeDeltas(settingsOf(n), rec); } catch (err) { return; }
         if (ui.editingId) {
           var ex = n.events.find(function (x) { return x.id === ui.editingId; });
+          delete ex.shooter;
           Object.assign(ex, rec);
           ui.editingId = null; ui.form = blankForm(); save(); ui.tab = 'history'; render();
           toast('Hand updated');
@@ -512,6 +541,11 @@
         return;
       }
       case 'dice': Dice.open(); return;
+      case 'setup-shooter': ui.setup.shooter = !ui.setup.shooter; render(); return;
+      case 'night-shooter':
+        n.shooter = !n.shooter; save(); render();
+        toast('Shooter mode ' + (n.shooter ? 'on' : 'off') + ' for new hands');
+        return;
       case 'cancel-edit': ui.editingId = null; ui.form = blankForm(); render(); return;
       case 'start': startNight(); return;
       case 'gang-default':
