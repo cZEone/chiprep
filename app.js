@@ -6,6 +6,47 @@
   var app = document.getElementById('app');
   var toastEl = document.getElementById('toast');
 
+  // ---------- Icons (24px, stroke-based) ----------
+  var ICONS = {
+    trophy: '<path d="M8 21h8M12 17v4M7 4h10v5a5 5 0 0 1-10 0z"/><path d="M17 6h2.5A1.5 1.5 0 0 1 21 7.5V8a4 4 0 0 1-4 4M7 6H4.5A1.5 1.5 0 0 0 3 7.5V8a4 4 0 0 0 4 4"/>',
+    sparkle: '<path d="M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8z"/><path d="M19 15l.7 1.8 1.8.7-1.8.7L19 20l-.7-1.8-1.8-.7 1.8-.7z"/>',
+    tiles: '<rect x="2" y="6" width="4.5" height="12" rx="1"/><rect x="7.2" y="6" width="4.5" height="12" rx="1"/><rect x="12.4" y="6" width="4.5" height="12" rx="1"/><rect x="17.6" y="6" width="4.5" height="12" rx="1"/>',
+    tilesHidden: '<rect x="2" y="6" width="4.5" height="12" rx="1"/><rect x="7.2" y="6" width="4.5" height="12" rx="1" fill="currentColor"/><rect x="12.4" y="6" width="4.5" height="12" rx="1" fill="currentColor"/><rect x="17.6" y="6" width="4.5" height="12" rx="1"/>',
+    shield: '<path d="M12 3l7.5 3v5.5c0 4.6-3.2 8.2-7.5 9.5-4.3-1.3-7.5-4.9-7.5-9.5V6z"/>',
+    shieldUp: '<path d="M12 3l7.5 3v5.5c0 4.6-3.2 8.2-7.5 9.5-4.3-1.3-7.5-4.9-7.5-9.5V6z"/><path d="M9 12.5l3-3 3 3M9 16l3-3 3 3"/>',
+    alert: '<path d="M10.3 3.9L2.4 18a2 2 0 0 0 1.7 3h15.8a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/><path d="M12 9v4M12 17h.01"/>',
+    plus: '<circle cx="12" cy="12" r="9"/><path d="M12 8v8M8 12h8"/>',
+    history: '<path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5M12 7v5l3 2"/>',
+    chart: '<path d="M5 20V11M12 20V4M19 20v-6"/>',
+    undo: '<path d="M9 14L4 9l5-5"/><path d="M4 9h11a5 5 0 0 1 0 10h-3"/>',
+    pencil: '<path d="M4 20h4L19 9l-4-4L4 16z"/><path d="M13.5 6.5l4 4"/>',
+    trash: '<path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3"/>',
+    copy: '<rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V6a2 2 0 0 1 2-2h8"/>',
+    flag: '<path d="M5 21V4M5 4h12l-2.5 4L17 12H5"/>',
+    arrow: '<path d="M5 12h14M13 6l6 6-6 6"/>',
+    crown: '<path d="M3 8l4.5 4L12 5l4.5 7L21 8l-2 11H5z"/>',
+    users: '<circle cx="9" cy="8" r="3.5"/><path d="M2.5 20a6.5 6.5 0 0 1 13 0"/><path d="M16 4.5a3.5 3.5 0 0 1 0 7M18 14a6 6 0 0 1 3.5 6"/>',
+    coins: '<circle cx="9" cy="9" r="6"/><path d="M15.4 9.6a6 6 0 1 1-5.8 5.8"/>',
+    info: '<circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 8h.01"/>',
+    x: '<path d="M6 6l12 12M18 6L6 18"/>',
+    reopen: '<path d="M21 12a9 9 0 1 1-3-6.7L21 8"/><path d="M21 3v5h-5"/>',
+    play: '<path d="M7 4.5l12 7.5-12 7.5z"/>',
+    calendar: '<rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/>',
+    check: '<path d="M5 12.5l4.5 4.5L19 7.5"/>',
+  };
+  function icon(name, cls) {
+    return '<svg class="ico' + (cls ? ' ' + cls : '') + '" viewBox="0 0 24 24" aria-hidden="true">' + ICONS[name] + '</svg>';
+  }
+  var LOGO = '<svg class="logo" viewBox="0 0 38 46" aria-hidden="true">' +
+    '<rect x="1" y="4" width="36" height="41" rx="8" fill="#cbbd9a"/>' +
+    '<rect x="1" y="1" width="36" height="40" rx="8" fill="#fffaf0"/>' +
+    '<text x="19" y="29.5" text-anchor="middle" font-size="22" font-weight="800" fill="#c8372d" ' +
+    'font-family="PingFang SC, Hiragino Sans GB, Microsoft YaHei, Noto Sans SC, sans-serif">中</text></svg>';
+
+  var TYPE_ICON = { discard: 'trophy', zimo: 'sparkle', gang: 'tiles', angang: 'tilesHidden', bao: 'shield', baolimit: 'shieldUp', zhahu: 'alert' };
+  var TYPE_ALT = { bao: true, baolimit: true, zhahu: true };
+  var TYPE_CN = { zimo: true, gang: true, angang: true, bao: true, baolimit: true, zhahu: true };
+
   // ---------- Persistence ----------
   function load() {
     try {
@@ -23,12 +64,7 @@
   var store = load();
 
   // ---------- UI state ----------
-  var ui = {
-    tab: 'record',
-    form: blankForm(),
-    editingId: null,
-    setup: null,
-  };
+  var ui = { tab: 'record', form: blankForm(), editingId: null, setup: null };
   function blankForm() { return { type: 'discard', player: null, thrower: null, tai: null }; }
 
   // ---------- Helpers ----------
@@ -40,6 +76,7 @@
   function uid() { return Date.now().toString(36) + Math.random().toString(36).slice(2, 7); }
   function fmt(c, signed) { return MJ.fmt(c, signed); }
   function cls(c) { return c > 0 ? 'pos' : c < 0 ? 'neg' : 'muted'; }
+  function tint(c) { return c > 0 ? 'up' : c < 0 ? 'down' : ''; }
   function money(x) { return fmt(MJ.toCents(x)); }
   function night() { return store.current; }
   function settingsOf(n) { return { rates: n.rates, gang: n.gang, angang: n.angang }; }
@@ -47,66 +84,80 @@
     return n.presetKey && MJ.PRESETS[n.presetKey] ? MJ.PRESETS[n.presetKey].label : 'Custom';
   }
   function dateStr(ts) {
-    var d = new Date(ts);
-    return d.toLocaleDateString(undefined, { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric' });
+    return new Date(ts).toLocaleDateString(undefined, { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric' });
   }
   function timeStr(ts) {
     return new Date(ts).toLocaleTimeString(undefined, { hour: 'numeric', minute: '2-digit' });
+  }
+  function initial(name) { var ch = Array.from(String(name).trim())[0]; return ch ? ch.toUpperCase() : '?'; }
+  function avatar(n, i, size) {
+    return '<span class="av c' + i + (size ? ' ' + size : '') + '">' + esc(initial(n.players ? n.players[i] : n[i])) + '</span>';
   }
 
   function describe(n, ev) {
     var P = function (i) { return '<b>' + esc(n.players[i]) + '</b>'; };
     switch (ev.type) {
-      case 'discard': return P(ev.player) + ' won ' + ev.tai + ' tai off ' + P(ev.thrower);
-      case 'zimo': return P(ev.player) + ' zi mo ' + ev.tai + ' tai';
-      case 'gang': return P(ev.player) + ' gang';
-      case 'angang': return P(ev.player) + ' an gang';
-      case 'bao': return P(ev.player) + ' won · Bao by ' + P(ev.thrower);
-      case 'baolimit': return P(ev.player) + ' won · Bao Limit by ' + P(ev.thrower);
-      case 'zhahu': return P(ev.player) + ' zha hu';
+      case 'discard': return P(ev.player) + ' won off ' + P(ev.thrower);
+      case 'zimo': return P(ev.player) + ' 自摸';
+      case 'gang': return P(ev.player) + ' 杠';
+      case 'angang': return P(ev.player) + ' 暗杠';
+      case 'bao': return P(ev.player) + ' won · 包 by ' + P(ev.thrower);
+      case 'baolimit': return P(ev.player) + ' won · 包 Limit by ' + P(ev.thrower);
+      case 'zhahu': return P(ev.player) + ' 诈胡';
     }
     return '';
   }
 
-  var showToastTimer = null;
+  var toastTimer = null;
   function toast(msg, actionLabel, action) {
-    clearTimeout(showToastTimer);
-    toastEl.innerHTML = '<span>' + msg + '</span>' + (actionLabel ? '<button type="button">' + esc(actionLabel) + '</button>' : '');
+    clearTimeout(toastTimer);
+    toastEl.innerHTML = '<span>' + msg + '</span>' +
+      (actionLabel ? '<button type="button">' + icon('undo', 'sm') + esc(actionLabel) + '</button>' : '');
     toastEl.hidden = false;
-    if (actionLabel) {
-      toastEl.querySelector('button').onclick = function () { toastEl.hidden = true; action(); };
-    }
-    showToastTimer = setTimeout(function () { toastEl.hidden = true; }, 5000);
+    if (actionLabel) toastEl.querySelector('button').onclick = function () { toastEl.hidden = true; action(); };
+    toastTimer = setTimeout(function () { toastEl.hidden = true; }, 5000);
   }
 
-  // ---------- Render ----------
+  // ---------- Render: main ----------
   function render() {
     if (!night()) return renderSetup();
+    app.classList.remove('no-tabs');
     var n = night();
     var tot = MJ.totals(settingsOf(n), n.events);
     var max = Math.max.apply(null, tot);
-    var html = '';
-    html += '<header class="topbar"><div><h1>MJ Chips</h1><div class="sub">' +
-      esc(rateLabel(n)) + ' · Gang ' + money(n.gang) + ' / An Gang ' + money(n.angang) + ' · ' +
-      n.events.length + ' entr' + (n.events.length === 1 ? 'y' : 'ies') + '</div></div></header>';
-    html += '<section class="scores" aria-label="Scores">';
+    var h = '<header class="hero"><div class="brand">' + LOGO +
+      '<div><h1>MJ Chips</h1><div class="sub">' + dateStr(n.startedAt) + '</div></div></div>';
+    h += '<div class="pills"><span class="pill">' + icon('coins') + esc(rateLabel(n)) + '</span>' +
+      '<span class="pill">' + icon('tiles') + '杠 ' + money(n.gang) + '</span>' +
+      '<span class="pill">' + icon('tilesHidden') + '暗杠 ' + money(n.angang) + '</span></div>';
+    h += '<section class="scores" aria-label="Scores">';
     n.players.forEach(function (p, i) {
-      html += '<div class="score' + (max > 0 && tot[i] === max ? ' lead' : '') + '"><div class="name">' + esc(p) +
-        '</div><div class="amt ' + cls(tot[i]) + '">' + fmt(tot[i], true) + '</div></div>';
+      var lead = max > 0 && tot[i] === max;
+      h += '<div class="score">' + (lead ? '<span class="crown" title="Leading">' + icon('crown') + '</span>' : '') +
+        '<div class="who">' + avatar(n, i) + '<span class="name">' + esc(p) + '</span></div>' +
+        '<div class="amt ' + (tot[i] ? cls(tot[i]) : 'zero') + '">' + fmt(tot[i], true) + '</div></div>';
     });
-    html += '</section>';
+    h += '</section></header>';
 
-    if (ui.tab === 'record') html += renderRecord(n);
-    else if (ui.tab === 'history') html += renderHistory(n);
-    else html += renderSummary(n, tot);
+    if (ui.tab === 'record') h += renderRecord(n);
+    else if (ui.tab === 'history') h += renderHistory(n);
+    else h += renderSummary(n, tot);
 
-    html += '<nav class="tabs"><div class="inner">' +
-      tabBtn('record', ui.editingId ? 'Edit' : 'Record') + tabBtn('history', 'History') + tabBtn('summary', 'Summary') +
-      '</div></nav>';
-    app.innerHTML = html;
+    h += '<nav class="tabs" aria-label="Sections"><div class="inner">' +
+      tabBtn('record', 'plus', ui.editingId ? 'Edit' : 'Record') +
+      tabBtn('history', 'history', 'History', n.events.length) +
+      tabBtn('summary', 'chart', 'Summary') + '</div></nav>';
+    app.innerHTML = h;
   }
-  function tabBtn(id, label) {
-    return '<button type="button" data-tab="' + id + '"' + (ui.tab === id ? ' aria-current="page"' : '') + '>' + label + '</button>';
+  function tabBtn(id, ico, label, count) {
+    return '<button type="button" data-tab="' + id + '"' + (ui.tab === id ? ' aria-current="page"' : '') + '>' +
+      '<span class="pip">' + icon(ico) + '</span><span>' + label +
+      (count ? '<span class="count">' + count + '</span>' : '') + '</span></button>';
+  }
+
+  function step(num, label, done, opt) {
+    return '<div class="step"><span class="n' + (done ? ' done' : '') + '">' + (done ? icon('check', 'sm') : num) + '</span>' +
+      label + (opt ? ' <span class="opt">' + opt + '</span>' : '') + '</div>';
   }
 
   function renderRecord(n) {
@@ -115,39 +166,44 @@
     var h = '';
     if (ui.editingId) {
       var num = n.events.findIndex(function (e) { return e.id === ui.editingId; }) + 1;
-      h += '<div class="banner" style="margin-top:16px"><span>Editing entry #' + num + '</span>' +
-        '<button type="button" class="btn sm" data-act="cancel-edit">Cancel</button></div>';
+      h += '<div class="banner"><span>' + icon('pencil', 'sm') + 'Editing hand #' + num + '</span>' +
+        '<button type="button" class="btn sm" data-act="cancel-edit">' + icon('x', 'sm') + 'Cancel</button></div>';
     }
-    h += '<h3>What happened?</h3><div class="choices c4">';
+    var s = 1;
+    h += step(s++, 'What happened?', true);
+    h += '<div class="choices c4">';
     ['discard', 'zimo', 'gang', 'angang'].forEach(function (k) { h += typeChip(k); });
     h += '</div><div class="choices c3" style="margin-top:8px">';
     ['bao', 'baolimit', 'zhahu'].forEach(function (k) { h += typeChip(k); });
     h += '</div>';
 
-    var playerLabel = { discard: 'Winner', zimo: 'Winner', bao: 'Winner', baolimit: 'Winner',
-      gang: 'Who made the gang?', angang: 'Who made the an gang?', zhahu: 'Who false-won? (pays everyone)' }[f.type];
-    h += '<h3>' + playerLabel + '</h3><div class="choices c4">';
+    var playerLabel = { discard: 'Who won?', zimo: 'Who won?', bao: 'Who won?', baolimit: 'Who won?',
+      gang: 'Who made the 杠?', angang: 'Who made the 暗杠?', zhahu: 'Who 诈胡?' }[f.type];
+    h += step(s++, playerLabel, f.player !== null, f.type === 'zhahu' ? 'pays everyone' : '');
+    h += '<div class="choices c4">';
     n.players.forEach(function (p, i) {
-      h += '<button type="button" class="chip" data-player="' + i + '" aria-pressed="' + (f.player === i) + '">' + esc(p) + '</button>';
+      h += '<button type="button" class="chip person" data-player="' + i + '" aria-pressed="' + (f.player === i) + '">' +
+        avatar(n, i, 'lg') + '<span class="lbl">' + esc(p) + '</span></button>';
     });
     h += '</div>';
 
     if (t.needsThrower) {
-      var tl = f.type === 'discard' ? 'Who threw the tile?' : 'Who threw? (pays for everyone)';
-      h += '<h3>' + tl + '</h3><div class="choices c4">';
+      h += step(s++, 'Who threw the tile?', f.thrower !== null, f.type === 'discard' ? '' : 'pays for everyone');
+      h += '<div class="choices c4">';
       n.players.forEach(function (p, i) {
-        h += '<button type="button" class="chip" data-thrower="' + i + '" aria-pressed="' + (f.thrower === i) + '"' +
-          (f.player === i ? ' disabled' : '') + '>' + esc(p) + '</button>';
+        h += '<button type="button" class="chip person" data-thrower="' + i + '" aria-pressed="' + (f.thrower === i) + '"' +
+          (f.player === i ? ' disabled' : '') + '>' + avatar(n, i, 'lg') + '<span class="lbl">' + esc(p) + '</span></button>';
       });
       h += '</div>';
     }
 
     if (t.needsTai) {
-      h += '<h3>Tai</h3><div class="choices c5">';
+      h += step(s++, 'How many tai?', f.tai !== null);
+      h += '<div class="choices c5">';
       for (var k = 1; k <= MJ.MAX_TAI; k++) {
         var r = n.rates[k - 1];
-        h += '<button type="button" class="chip" data-tai="' + k + '" aria-pressed="' + (f.tai === k) + '">' + k +
-          '<small>' + money(r[0]) + '/' + money(r[1]) + '</small></button>';
+        h += '<button type="button" class="chip tai" data-tai="' + k + '" aria-pressed="' + (f.tai === k) + '">' +
+          '<span class="big">' + k + '</span><small>' + money(r[0]) + '/' + money(r[1]) + '</small></button>';
       }
       h += '</div>';
     }
@@ -161,95 +217,102 @@
       baolimit: 'Thrower pays everything at 5 tai: 3 × ' + money(n.rates[4][1]) + '.',
       zhahu: 'Pays each other player ' + money(n.rates[4][1]) + ' (5 tai, 2nd rate).',
     }[f.type];
-    h += '<p class="hint">' + hint + '</p>';
+    h += '<p class="hint">' + icon('info') + '<span>' + hint + '</span></p>';
 
     var deltas = null, err = null;
     try { deltas = MJ.computeDeltas(settingsOf(n), f); } catch (e) { err = e.message; }
     h += '<div class="submitbar"><div class="preview">';
     n.players.forEach(function (p, i) {
       var v = deltas ? deltas[i] : 0;
-      h += '<div><div class="n">' + esc(p) + '</div><div class="v ' + (deltas ? cls(v) : 'muted') + '">' +
-        (deltas ? fmt(v, true) : '–') + '</div></div>';
+      h += '<div class="' + (deltas ? tint(v) : '') + '"><div class="n">' + avatar(n, i, 'sm') + '<span>' + esc(p) + '</span></div>' +
+        '<div class="v ' + (deltas ? cls(v) : 'muted') + '">' + (deltas ? (v ? fmt(v, true) : '–') : '–') + '</div></div>';
     });
     h += '</div>';
-    h += '<button type="button" class="btn primary block" style="margin-top:10px" data-act="submit"' + (deltas ? '' : ' disabled') + '>' +
-      (ui.editingId ? 'Save changes' : 'Add entry') + '</button>';
-    if (!deltas && err && f.player !== null) h += '<p class="hint" style="text-align:center;margin:6px 0 0">' + esc(err) + '</p>';
+    h += '<button type="button" class="btn primary block" data-act="submit"' + (deltas ? '' : ' disabled') + '>' +
+      icon(ui.editingId ? 'check' : 'plus') + (ui.editingId ? 'Save changes' : 'Add hand') + '</button>';
+    if (!deltas && err && f.player !== null) h += '<p class="why">' + esc(err) + '</p>';
     h += '</div>';
     return h;
   }
   function typeChip(k) {
-    return '<button type="button" class="chip" data-type="' + k + '" aria-pressed="' + (ui.form.type === k) + '">' +
-      MJ.TYPES[k].short + '</button>';
+    return '<button type="button" class="chip type' + (TYPE_ALT[k] ? ' alt' : '') + (TYPE_CN[k] ? ' cn' : '') +
+      '" data-type="' + k + '" aria-pressed="' + (ui.form.type === k) + '">' + icon(TYPE_ICON[k]) +
+      '<span class="lbl">' + MJ.TYPES[k].short + '</span></button>';
   }
 
+  // ---------- Render: history ----------
   function renderHistory(n) {
-    if (!n.events.length) return '<p class="empty">No entries yet. Record the first hand on the Record tab.</p>';
+    if (!n.events.length) {
+      return '<div class="empty">' + icon('tiles') + '<div>No hands yet.<br>Record the first one on the Record tab.</div></div>';
+    }
     var s = settingsOf(n);
-    var h = '<h2>History</h2><ul class="hist">';
+    var h = '<h2>' + icon('history') + 'History</h2><ul class="hist">';
     for (var idx = n.events.length - 1; idx >= 0; idx--) {
       var ev = n.events[idx];
       var d = MJ.computeDeltas(s, ev);
-      h += '<li' + (ev.id === ui.editingId ? ' class="editing"' : '') + '><div class="head"><span class="desc">' + describe(n, ev) +
-        '<span class="tag">' + MJ.TYPES[ev.type].short + '</span></span><span class="num">#' + (idx + 1) + ' · ' + timeStr(ev.at) + '</span></div>';
+      var meta = '#' + (idx + 1) + ' · ' + timeStr(ev.at) + (ev.tai ? ' · ' + ev.tai + ' tai' : '');
+      h += '<li' + (ev.id === ui.editingId ? ' class="editing"' : '') + '><div class="head">' +
+        '<span class="badge' + (TYPE_ALT[ev.type] ? ' alt' : '') + '">' + icon(TYPE_ICON[ev.type]) + '</span>' +
+        '<div class="desc">' + describe(n, ev) + '<div class="meta">' + meta + '</div></div>' +
+        '<div class="actions"><button type="button" class="btn icon" aria-label="Edit hand ' + (idx + 1) + '" data-edit="' + ev.id + '">' + icon('pencil', 'sm') + '</button>' +
+        '<button type="button" class="btn icon danger" aria-label="Delete hand ' + (idx + 1) + '" data-del="' + ev.id + '">' + icon('trash', 'sm') + '</button></div></div>';
       h += '<div class="deltas">';
       n.players.forEach(function (p, i) {
-        h += '<span class="' + cls(d[i]) + '">' + esc(p.slice(0, 8)) + '<br>' + (d[i] ? fmt(d[i], true) : '–') + '</span>';
+        h += '<span class="' + tint(d[i]) + ' ' + cls(d[i]) + '" title="' + esc(p) + '">' + avatar(n, i, 'sm') + (d[i] ? fmt(d[i], true) : '–') + '</span>';
       });
-      h += '</div><div class="actions"><button type="button" class="btn sm" data-edit="' + ev.id + '">Edit</button>' +
-        '<button type="button" class="btn sm danger" data-del="' + ev.id + '">Delete</button></div></li>';
+      h += '</div></li>';
     }
     return h + '</ul>';
   }
 
+  // ---------- Render: summary ----------
   function renderSummary(n, tot) {
     var st = MJ.stats(settingsOf(n), n.events);
-    var h = '<h2>Night summary</h2><div class="card scroll-x"><table><thead><tr><th></th>';
-    n.players.forEach(function (p) { h += '<th>' + esc(p) + '</th>'; });
+    var h = '<h2>' + icon('chart') + 'Tonight</h2><div class="card scroll-x"><table><thead><tr><th></th>';
+    n.players.forEach(function (p, i) { h += '<th>' + avatar(n, i) + esc(p) + '</th>'; });
     h += '</tr></thead><tbody>';
     var rows = [
-      ['Net', function (s) { return '<b class="' + cls(s.net) + '">' + fmt(s.net, true) + '</b>'; }],
+      ['Net', function (s) { return '<b class="' + cls(s.net) + '">' + fmt(s.net, true) + '</b>'; }, 'net'],
       ['Wins', function (s) { return s.wins; }],
-      ['· off discard', function (s) { return s.discardWins; }],
-      ['· zi mo', function (s) { return s.zimo; }],
-      ['Gang', function (s) { return s.gang; }],
-      ['An Gang', function (s) { return s.angang; }],
-      ['Threw a winning tile', function (s) { return s.thrown; }],
-      ['Bao (paid)', function (s) { return s.bao; }],
-      ['Zha Hu', function (s) { return s.zhahu; }],
+      ['off discard', function (s) { return s.discardWins; }, 'sub'],
+      ['自摸', function (s) { return s.zimo; }, 'sub'],
+      ['杠', function (s) { return s.gang; }],
+      ['暗杠', function (s) { return s.angang; }],
+      ['Threw winning tile', function (s) { return s.thrown; }],
+      ['包 (paid)', function (s) { return s.bao; }],
+      ['诈胡', function (s) { return s.zhahu; }],
       ['Biggest gain', function (s) { return s.biggestWin ? fmt(s.biggestWin) : '–'; }],
     ];
     rows.forEach(function (r) {
-      h += '<tr><td>' + r[0] + '</td>';
-      st.forEach(function (s) { h += '<td>' + r[1](s) + '</td>'; });
+      h += '<tr' + (r[2] === 'net' ? ' class="net"' : '') + '><td class="lbl' + (r[2] === 'sub' ? ' sub' : '') + '">' + r[0] + '</td>';
+      st.forEach(function (s) { var v = r[1](s); h += '<td>' + (v === 0 ? '<span class="muted">0</span>' : v) + '</td>'; });
       h += '</tr>';
     });
     h += '</tbody></table></div>';
 
     var pays = MJ.settle(tot);
-    h += '<h2>Settle up</h2><div class="card">';
+    h += '<h2>' + icon('coins') + 'Settle up</h2><div class="card">';
     if (!pays.length) h += '<p class="muted" style="margin:0">Everyone is square.</p>';
     else {
       h += '<ul class="settle">';
       pays.forEach(function (p) {
-        h += '<li><span><b>' + esc(n.players[p.from]) + '</b> pays <b>' + esc(n.players[p.to]) + '</b></span><b>' + fmt(p.cents) + '</b></li>';
+        h += '<li><span class="who">' + avatar(n, p.from) + '<span class="nm">' + esc(n.players[p.from]) + '</span>' + icon('arrow', 'sm') +
+          avatar(n, p.to) + '<span class="nm">' + esc(n.players[p.to]) + '</span></span><span class="amt">' + fmt(p.cents) + '</span></li>';
       });
       h += '</ul>';
     }
-    h += '</div><button type="button" class="btn block" style="margin-top:10px" data-act="copy">Copy summary</button>';
+    h += '</div><button type="button" class="btn block" style="margin-top:10px" data-act="copy">' + icon('copy') + 'Copy summary</button>';
 
-    h += '<h2>Tonight\'s settings</h2><div class="card stack">';
-    h += '<div class="names">';
+    h += '<h2>' + icon('users') + 'Players &amp; rates</h2><div class="card stack"><div class="names">';
     n.players.forEach(function (p, i) {
-      h += '<label class="field"><span>Player ' + (i + 1) + '</span><input type="text" maxlength="16" data-rename="' + i + '" value="' + esc(p) + '"></label>';
+      h += '<label class="field"><span>' + avatar(n, i, 'sm') + 'Player ' + (i + 1) + '</span><input type="text" maxlength="16" data-rename="' + i + '" value="' + esc(p) + '"></label>';
     });
     h += '</div>';
-    h += '<p class="small muted" style="margin:0">Rate ' + esc(rateLabel(n)) + ' · Gang ' + money(n.gang) + ' · An Gang ' + money(n.angang) +
-      ' · started ' + dateStr(n.startedAt) + ', ' + timeStr(n.startedAt) + '</p>';
-    h += rateTableStatic(n.rates);
-    h += '</div>';
-    h += '<button type="button" class="btn block danger" style="margin-top:14px" data-act="end">End night</button>';
-    h += '<p class="hint" style="text-align:center">Ending saves tonight to Past nights and starts a fresh setup.</p>';
+    h += '<p class="small muted" style="margin:0">' + esc(rateLabel(n)) + ' · 杠 ' + money(n.gang) + ' · 暗杠 ' + money(n.angang) +
+      ' · started ' + timeStr(n.startedAt) + '</p>';
+    h += rateTableStatic(n.rates) + '</div>';
+    h += '<button type="button" class="btn block danger" style="margin-top:16px" data-act="end">' + icon('flag') + 'End night</button>';
+    h += '<p class="hint" style="justify-content:center">Saves tonight to Past nights and starts a fresh setup.</p>';
     return h;
   }
   function rateTableStatic(rates) {
@@ -273,48 +336,55 @@
     };
   }
   function renderSetup() {
+    app.classList.add('no-tabs');
     if (!ui.setup) ui.setup = newSetup();
     var s = ui.setup;
-    var h = '<header class="topbar"><div><h1>MJ Chips</h1><div class="sub">Set up tonight\'s game</div></div></header>';
-    h += '<div class="card stack"><h3 style="margin-top:0">Players</h3><div class="names">';
-    s.players.forEach(function (p, i) {
-      h += '<label class="field"><span>Player ' + (i + 1) + '</span><input type="text" maxlength="16" data-setup-name="' + i +
-        '" value="' + esc(p) + '" placeholder="Name"></label>';
-    });
-    h += '</div>';
+    var h = '<header class="hero"><div class="brand">' + LOGO +
+      '<div><h1>MJ Chips</h1><div class="sub">Set up tonight\'s game</div></div></div></header>';
 
-    h += '<h3>Rate</h3><div class="choices c3">';
-    Object.keys(MJ.PRESETS).forEach(function (k) {
-      h += '<button type="button" class="chip" data-preset="' + k + '" aria-pressed="' + (s.presetKey === k) + '">' + MJ.PRESETS[k].label + '</button>';
+    h += '<div class="card" style="margin-top:16px"><div class="section-title">' + icon('users') + 'Players</div><div class="names">';
+    s.players.forEach(function (p, i) {
+      h += '<label class="field"><span><span class="av sm c' + i + '">' + (i + 1) + '</span>Player ' + (i + 1) + '</span>' +
+        '<input type="text" maxlength="16" data-setup-name="' + i + '" value="' + esc(p) + '" placeholder="Name"></label>';
     });
-    h += '<button type="button" class="chip" data-preset="custom" aria-pressed="' + (s.presetKey === 'custom') + '">Custom</button></div>';
-    h += '<table class="ratetable"><thead><tr><th>Tai</th><th>1st rate ($)</th><th>2nd rate ($)</th></tr></thead><tbody>';
+    h += '</div></div>';
+
+    h += '<div class="card"><div class="section-title">' + icon('coins') + 'Rate</div><div class="choices c3">';
+    Object.keys(MJ.PRESETS).forEach(function (k) {
+      var r = MJ.PRESETS[k].rates[0];
+      h += '<button type="button" class="chip" data-preset="' + k + '" aria-pressed="' + (s.presetKey === k) + '">' +
+        '<span class="lbl">' + MJ.PRESETS[k].label + '</span><small>1 tai ' + money(r[0]) + '/' + money(r[1]) + '</small></button>';
+    });
+    h += '<button type="button" class="chip" data-preset="custom" aria-pressed="' + (s.presetKey === 'custom') + '">' +
+      '<span class="lbl">Custom</span><small>your own</small></button></div>';
+    h += '<table class="ratetable" style="margin-top:12px"><thead><tr><th>Tai</th><th>1st rate ($)</th><th>2nd rate ($)</th></tr></thead><tbody>';
     s.rates.forEach(function (r, i) {
       h += '<tr><td>' + (i + 1) + '</td>' +
-        '<td><input inputmode="decimal" data-rate="' + i + ',0" value="' + esc(r[0]) + '"></td>' +
-        '<td><input inputmode="decimal" data-rate="' + i + ',1" value="' + esc(r[1]) + '"></td></tr>';
+        '<td><input inputmode="decimal" aria-label="' + (i + 1) + ' tai 1st rate" data-rate="' + i + ',0" value="' + esc(r[0]) + '"></td>' +
+        '<td><input inputmode="decimal" aria-label="' + (i + 1) + ' tai 2nd rate" data-rate="' + i + ',1" value="' + esc(r[1]) + '"></td></tr>';
     });
-    h += '</tbody></table><p class="hint" style="margin:0">Editing any amount switches to Custom.</p>';
+    h += '</tbody></table><p class="hint">' + icon('info') + '<span>Editing any amount switches to Custom.</span></p></div>';
 
-    h += '<h3>Gang amounts (each player pays)</h3><div class="row">' +
-      '<label class="field"><span>Gang ($)</span><input inputmode="decimal" data-gang="gang" value="' + esc(s.gang) + '"></label>' +
-      '<label class="field"><span>An Gang ($)</span><input inputmode="decimal" data-gang="angang" value="' + esc(s.angang) + '"></label></div>' +
-      '<button type="button" class="btn sm" data-act="gang-default">Use 1 tai rates (' + money(s.rates[0][0]) + ' / ' + money(s.rates[0][1]) + ')</button>';
-    h += '</div>';
-    if (s.error) h += '<p class="error">' + esc(s.error) + '</p>';
-    h += '<button type="button" class="btn primary block" style="margin-top:16px" data-act="start">Start night</button>';
+    h += '<div class="card"><div class="section-title">' + icon('tiles') + '杠 amounts · each player pays</div><div class="row">' +
+      '<label class="field"><span>杠 ($)</span><input inputmode="decimal" data-gang="gang" value="' + esc(s.gang) + '"></label>' +
+      '<label class="field"><span>暗杠 ($)</span><input inputmode="decimal" data-gang="angang" value="' + esc(s.angang) + '"></label></div>' +
+      '<button type="button" class="btn sm" style="margin-top:12px" data-act="gang-default">' + icon('reopen', 'sm') +
+      'Use 1 tai rates (' + money(s.rates[0][0]) + ' / ' + money(s.rates[0][1]) + ')</button></div>';
+    if (s.error) h += '<p class="error">' + icon('alert', 'sm') + esc(s.error) + '</p>';
+    h += '<button type="button" class="btn primary block" style="margin-top:16px" data-act="start">' + icon('play') + 'Start night</button>';
 
     if (store.archive.length) {
-      h += '<h2>Past nights</h2><ul class="hist">';
+      h += '<h2>' + icon('calendar') + 'Past nights</h2><ul class="hist">';
       store.archive.forEach(function (a, ai) {
         var tot = MJ.totals(settingsOf(a), a.events);
-        h += '<li><div class="head"><span class="desc">' + dateStr(a.startedAt) + '</span><span class="num">' +
-          esc(rateLabel(a)) + ' · ' + a.events.length + ' entries</span></div><div class="deltas">';
+        h += '<li><div class="head"><span class="badge">' + icon('calendar') + '</span><div class="desc">' + dateStr(a.startedAt) +
+          '<div class="meta">' + esc(rateLabel(a)) + ' · ' + a.events.length + ' hands</div></div>' +
+          '<div class="actions"><button type="button" class="btn icon" aria-label="Reopen night" data-resume="' + ai + '">' + icon('reopen', 'sm') + '</button>' +
+          '<button type="button" class="btn icon danger" aria-label="Delete night" data-delnight="' + ai + '">' + icon('trash', 'sm') + '</button></div></div><div class="deltas">';
         a.players.forEach(function (p, i) {
-          h += '<span class="' + cls(tot[i]) + '">' + esc(p.slice(0, 8)) + '<br>' + fmt(tot[i], true) + '</span>';
+          h += '<span class="' + tint(tot[i]) + ' ' + cls(tot[i]) + '" title="' + esc(p) + '">' + avatar(a, i, 'sm') + fmt(tot[i], true) + '</span>';
         });
-        h += '</div><div class="actions"><button type="button" class="btn sm" data-resume="' + ai + '">Reopen</button>' +
-          '<button type="button" class="btn sm danger" data-delnight="' + ai + '">Delete</button></div></li>';
+        h += '</div></li>';
       });
       h += '</ul>';
     }
@@ -338,7 +408,7 @@
       rates.push([a, b]);
     }
     var g = parseMoney(s.gang), ag = parseMoney(s.angang);
-    if (g === null || ag === null) { s.error = 'Gang and An Gang must be positive amounts.'; return render(); }
+    if (g === null || ag === null) { s.error = '杠 and 暗杠 must be positive amounts.'; return render(); }
     store.current = { id: uid(), startedAt: Date.now(), players: names, presetKey: s.presetKey, rates: rates, gang: g, angang: ag, events: [] };
     ui.setup = null; ui.tab = 'record'; ui.form = blankForm(); ui.editingId = null;
     save(); render(); window.scrollTo(0, 0);
@@ -346,7 +416,7 @@
 
   function summaryText(n) {
     var tot = MJ.totals(settingsOf(n), n.events);
-    var lines = ['Mahjong · ' + dateStr(n.startedAt) + ' · ' + rateLabel(n), ''];
+    var lines = ['🀄 Mahjong · ' + dateStr(n.startedAt) + ' · ' + rateLabel(n), ''];
     n.players.forEach(function (p, i) { lines.push(p + ': ' + fmt(tot[i], true)); });
     var pays = MJ.settle(tot);
     if (pays.length) {
@@ -391,7 +461,7 @@
       var removed = n.events.splice(i, 1)[0];
       if (ui.editingId === removed.id) { ui.editingId = null; ui.form = blankForm(); }
       save(); render();
-      toast('Entry #' + (i + 1) + ' deleted', 'Undo', function () { n.events.splice(i, 0, removed); save(); render(); });
+      toast('Hand #' + (i + 1) + ' deleted', 'Undo', function () { n.events.splice(i, 0, removed); save(); render(); });
       return;
     }
     if (d.preset) {
@@ -404,9 +474,8 @@
       return render();
     }
     if (d.resume !== undefined) {
-      var idx = Number(d.resume);
-      if (!confirm('Reopen this night to keep playing or fix entries?')) return;
-      store.current = store.archive.splice(idx, 1)[0];
+      if (!confirm('Reopen this night to keep playing or fix hands?')) return;
+      store.current = store.archive.splice(Number(d.resume), 1)[0];
       ui.setup = null; ui.tab = 'record'; save(); render(); return;
     }
     if (d.delnight !== undefined) {
@@ -424,7 +493,7 @@
           var ex = n.events.find(function (x) { return x.id === ui.editingId; });
           Object.assign(ex, rec);
           ui.editingId = null; ui.form = blankForm(); save(); ui.tab = 'history'; render();
-          toast('Entry updated');
+          toast('Hand updated');
         } else {
           rec.id = uid(); rec.at = Date.now();
           n.events.push(rec);
@@ -462,8 +531,7 @@
       s.rates[p[0]][p[1]] = el.value;
       if (s.presetKey !== 'custom') {
         s.presetKey = 'custom';
-        var chips = app.querySelectorAll('[data-preset]');
-        chips.forEach(function (c) { c.setAttribute('aria-pressed', String(c.dataset.preset === 'custom')); });
+        app.querySelectorAll('[data-preset]').forEach(function (c) { c.setAttribute('aria-pressed', String(c.dataset.preset === 'custom')); });
       }
       return;
     }

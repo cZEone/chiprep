@@ -21,13 +21,13 @@
   };
 
   var TYPES = {
-    discard:  { label: 'Win (discard)', short: 'Win',       needsThrower: true,  needsTai: true },
-    zimo:     { label: 'Zi Mo',         short: 'Zi Mo',     needsThrower: false, needsTai: true },
-    gang:     { label: 'Gang',          short: 'Gang',      needsThrower: false, needsTai: false },
-    angang:   { label: 'An Gang',       short: 'An Gang',   needsThrower: false, needsTai: false },
-    bao:      { label: 'Bao',           short: 'Bao',       needsThrower: true,  needsTai: false },
-    baolimit: { label: 'Bao Limit',     short: 'Bao Limit', needsThrower: true,  needsTai: false },
-    zhahu:    { label: 'Zha Hu',        short: 'Zha Hu',    needsThrower: false, needsTai: false },
+    discard:  { label: 'Win',      short: 'Win',      needsThrower: true,  needsTai: true },
+    zimo:     { label: '自摸',     short: '自摸',     needsThrower: false, needsTai: true },
+    gang:     { label: '杠',       short: '杠',       needsThrower: false, needsTai: false },
+    angang:   { label: '暗杠',     short: '暗杠',     needsThrower: false, needsTai: false },
+    bao:      { label: '包',       short: '包',       needsThrower: true,  needsTai: false },
+    baolimit: { label: '包 Limit', short: '包 Limit', needsThrower: true,  needsTai: false },
+    zhahu:    { label: '诈胡',     short: '诈胡',     needsThrower: false, needsTai: false },
   };
 
   function toCents(x) { return Math.round(Number(x) * 100); }
@@ -85,7 +85,7 @@
         d[thrower] -= bao; d[p] += bao;
         break;
       case 'baolimit':
-        // Thrower pays for everyone at max tai, as a zi mo: 3 x 2nd.
+        // Thrower pays for everyone at max tai, as a 自摸: 3 x 2nd.
         var lim = 3 * rate(MAX_TAI, 1);
         d[thrower] -= lim; d[p] += lim;
         break;
