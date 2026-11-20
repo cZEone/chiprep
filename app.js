@@ -43,6 +43,11 @@
     '<text x="19" y="29.5" text-anchor="middle" font-size="22" font-weight="800" fill="#c8372d" ' +
     'font-family="PingFang SC, Hiragino Sans GB, Microsoft YaHei, Noto Sans SC, sans-serif">中</text></svg>';
 
+  var DICE_BTN = '<button type="button" class="dice-btn" data-act="dice" aria-label="Roll dice">' +
+    '<svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="4"/>' +
+    '<circle cx="8.5" cy="8.5" r="1.3" fill="currentColor"/><circle cx="12" cy="12" r="1.3" fill="currentColor"/>' +
+    '<circle cx="15.5" cy="15.5" r="1.3" fill="currentColor"/></svg><span>Dice</span></button>';
+
   var TYPE_ICON = { discard: 'trophy', zimo: 'sparkle', gang: 'tiles', angang: 'tilesHidden', bao: 'shield', baolimit: 'shieldUp', zhahu: 'alert' };
   var TYPE_ALT = { bao: true, baolimit: true, zhahu: true };
   var TYPE_CN = { zimo: true, gang: true, angang: true, bao: true, baolimit: true, zhahu: true };
@@ -126,7 +131,7 @@
     var tot = MJ.totals(settingsOf(n), n.events);
     var max = Math.max.apply(null, tot);
     var h = '<header class="hero"><div class="brand">' + LOGO +
-      '<div><h1>MJ Chips</h1><div class="sub">' + dateStr(n.startedAt) + '</div></div></div>';
+      '<div><h1>MJ Chips</h1><div class="sub">' + dateStr(n.startedAt) + '</div></div>' + DICE_BTN + '</div>';
     h += '<div class="pills"><span class="pill">' + icon('coins') + esc(rateLabel(n)) + '</span>' +
       '<span class="pill">' + icon('tiles') + '杠 ' + money(n.gang) + '</span>' +
       '<span class="pill">' + icon('tilesHidden') + '暗杠 ' + money(n.angang) + '</span></div>';
@@ -340,7 +345,7 @@
     if (!ui.setup) ui.setup = newSetup();
     var s = ui.setup;
     var h = '<header class="hero"><div class="brand">' + LOGO +
-      '<div><h1>MJ Chips</h1><div class="sub">Set up tonight\'s game</div></div></div></header>';
+      '<div><h1>MJ Chips</h1><div class="sub">Set up tonight\'s game</div></div>' + DICE_BTN + '</div></header>';
 
     h += '<div class="card" style="margin-top:16px"><div class="section-title">' + icon('users') + 'Players</div><div class="names">';
     s.players.forEach(function (p, i) {
@@ -506,6 +511,7 @@
         window.scrollTo(0, 0);
         return;
       }
+      case 'dice': Dice.open(); return;
       case 'cancel-edit': ui.editingId = null; ui.form = blankForm(); render(); return;
       case 'start': startNight(); return;
       case 'gang-default':
@@ -547,6 +553,79 @@
       render();
     }
   });
+
+  // ---------- Dice ----------
+  var Dice = (function () {
+    // Pip positions on a 3x3 grid (0-8, row by row).
+    var PIPS = { 1: [4], 2: [2, 6], 3: [2, 4, 6], 4: [0, 2, 6, 8], 5: [0, 2, 4, 6, 8], 6: [0, 2, 3, 5, 6, 8] };
+    var el = null, values = [1, 1, 1], rolling = false, rolled = false;
+
+    // Fair 1-6 using crypto with rejection sampling (no modulo bias).
+    function d6() {
+      var c = window.crypto || window.msCrypto;
+      if (c && c.getRandomValues) {
+        var buf = new Uint8Array(1);
+        do { c.getRandomValues(buf); } while (buf[0] >= 252);
+        return (buf[0] % 6) + 1;
+      }
+      return Math.floor(Math.random() * 6) + 1;
+    }
+    function face(v) {
+      var h = '<div class="die' + (v === 1 || v === 4 ? ' red' : '') + '" aria-label="' + v + '">';
+      for (var i = 0; i < 9; i++) h += '<span class="' + (PIPS[v].indexOf(i) >= 0 ? 'pip' : '') + '"></span>';
+      return h + '</div>';
+    }
+    function paint() {
+      el.querySelector('.dice-row').innerHTML = values.map(face).join('');
+      var total = values[0] + values[1] + values[2];
+      el.querySelector('.dice-total').innerHTML = rolled
+        ? '<span class="lbl">Total</span><span class="num">' + total + '</span>'
+        : '<span class="lbl">Tap Roll to throw the dice</span>';
+      el.querySelector('.dice-row').classList.toggle('shaking', rolling);
+      el.querySelector('[data-dice=roll]').disabled = rolling;
+    }
+    function roll() {
+      if (rolling) return;
+      rolling = true; rolled = false;
+      var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      var ticks = reduce ? 0 : 9, n = 0;
+      var final = [d6(), d6(), d6()];
+      (function tick() {
+        if (n++ < ticks) {
+          values = [d6(), d6(), d6()]; paint();
+          setTimeout(tick, 45 + n * 12);
+        } else {
+          values = final; rolling = false; rolled = true; paint();
+          if (navigator.vibrate) { try { navigator.vibrate(30); } catch (e) { /* ignore */ } }
+        }
+      })();
+    }
+    function close() { if (el) el.hidden = true; }
+    function open() {
+      if (!el) {
+        el = document.createElement('div');
+        el.className = 'sheet-wrap';
+        el.innerHTML = '<div class="sheet" role="dialog" aria-modal="true" aria-label="Dice">' +
+          '<div class="sheet-head"><h2>' + DICE_BTN.match(/<svg[\s\S]*?<\/svg>/)[0] + 'Dice</h2>' +
+          '<button type="button" class="btn icon" data-dice="close" aria-label="Close">' + icon('x', 'sm') + '</button></div>' +
+          '<div class="dice-row" data-dice="roll-area"></div><div class="dice-total" aria-live="polite"></div>' +
+          '<button type="button" class="btn primary block" data-dice="roll">' + icon('reopen') + 'Roll</button></div>';
+        document.body.appendChild(el);
+        el.addEventListener('click', function (e) {
+          if (e.target === el) return close();
+          var b = e.target.closest('[data-dice]');
+          if (!b) return;
+          if (b.dataset.dice === 'close') close();
+          else roll();
+        });
+        document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && !el.hidden) close(); });
+      }
+      el.hidden = false;
+      rolled = false; values = [1, 1, 1]; paint();
+      el.querySelector('[data-dice=roll]').focus();
+    }
+    return { open: open, d6: d6 };
+  })();
 
   render();
 })();

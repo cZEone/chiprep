@@ -13,7 +13,8 @@ Data is saved in the browser's local storage on that device.
 1. **Set up:** enter the 4 names, pick the rate (0.3 / 0.6, 0.1 / 0.2 or Custom) and set the 杠 and 暗杠 amounts (they default to the 1 台 rates).
 2. **Record:** pick what happened, then the winner, who threw the tile and the 台. Check the preview, then tap **Add hand**.
 3. **History:** edit or delete any entry. Totals recalculate.
-4. **Summary:** shows per-player counts for the night and the settle-up payments. **End night** saves the night under Past nights.
+4. **Dice:** tap **Dice** in the header (on setup or during play) to throw 3 dice and see the total.
+5. **Summary:** shows per-player counts for the night and the settle-up payments. **End night** saves the night under Past nights.
 
 ## Rules (same as the spreadsheet)
 
