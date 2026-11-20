@@ -198,7 +198,7 @@
     }
 
     if (t.needsTai) {
-      h += step(s++, 'How many tai?', f.tai !== null);
+      h += step(s++, 'How many 台?', f.tai !== null);
       h += '<div class="choices c5">';
       for (var k = 1; k <= MJ.MAX_TAI; k++) {
         var r = n.rates[k - 1];
@@ -213,9 +213,9 @@
       zimo: 'All three pay the 2nd rate.',
       gang: 'All three pay ' + money(n.gang) + '.',
       angang: 'All three pay ' + money(n.angang) + '.',
-      bao: 'Thrower pays everything at 5 tai: 2 × ' + money(n.rates[4][0]) + ' + ' + money(n.rates[4][1]) + '.',
-      baolimit: 'Thrower pays everything at 5 tai: 3 × ' + money(n.rates[4][1]) + '.',
-      zhahu: 'Pays each other player ' + money(n.rates[4][1]) + ' (5 tai, 2nd rate).',
+      bao: 'Thrower pays everything at 5 台: 2 × ' + money(n.rates[4][0]) + ' + ' + money(n.rates[4][1]) + '.',
+      baolimit: 'Thrower pays everything at 5 台: 3 × ' + money(n.rates[4][1]) + '.',
+      zhahu: 'Pays each other player ' + money(n.rates[4][1]) + ' (5 台, 2nd rate).',
     }[f.type];
     h += '<p class="hint">' + icon('info') + '<span>' + hint + '</span></p>';
 
@@ -250,7 +250,7 @@
     for (var idx = n.events.length - 1; idx >= 0; idx--) {
       var ev = n.events[idx];
       var d = MJ.computeDeltas(s, ev);
-      var meta = '#' + (idx + 1) + ' · ' + timeStr(ev.at) + (ev.tai ? ' · ' + ev.tai + ' tai' : '');
+      var meta = '#' + (idx + 1) + ' · ' + timeStr(ev.at) + (ev.tai ? ' · ' + ev.tai + ' 台' : '');
       h += '<li' + (ev.id === ui.editingId ? ' class="editing"' : '') + '><div class="head">' +
         '<span class="badge' + (TYPE_ALT[ev.type] ? ' alt' : '') + '">' + icon(TYPE_ICON[ev.type]) + '</span>' +
         '<div class="desc">' + describe(n, ev) + '<div class="meta">' + meta + '</div></div>' +
@@ -316,7 +316,7 @@
     return h;
   }
   function rateTableStatic(rates) {
-    var h = '<table><thead><tr><th>Tai</th><th>1st rate</th><th>2nd rate</th></tr></thead><tbody>';
+    var h = '<table><thead><tr><th>台</th><th>1st rate</th><th>2nd rate</th></tr></thead><tbody>';
     rates.forEach(function (r, i) { h += '<tr><td>' + (i + 1) + '</td><td>' + money(r[0]) + '</td><td>' + money(r[1]) + '</td></tr>'; });
     return h + '</tbody></table>';
   }
@@ -353,15 +353,15 @@
     Object.keys(MJ.PRESETS).forEach(function (k) {
       var r = MJ.PRESETS[k].rates[0];
       h += '<button type="button" class="chip" data-preset="' + k + '" aria-pressed="' + (s.presetKey === k) + '">' +
-        '<span class="lbl">' + MJ.PRESETS[k].label + '</span><small>1 tai ' + money(r[0]) + '/' + money(r[1]) + '</small></button>';
+        '<span class="lbl">' + MJ.PRESETS[k].label + '</span><small>1 台 ' + money(r[0]) + '/' + money(r[1]) + '</small></button>';
     });
     h += '<button type="button" class="chip" data-preset="custom" aria-pressed="' + (s.presetKey === 'custom') + '">' +
       '<span class="lbl">Custom</span><small>your own</small></button></div>';
-    h += '<table class="ratetable" style="margin-top:12px"><thead><tr><th>Tai</th><th>1st rate ($)</th><th>2nd rate ($)</th></tr></thead><tbody>';
+    h += '<table class="ratetable" style="margin-top:12px"><thead><tr><th>台</th><th>1st rate ($)</th><th>2nd rate ($)</th></tr></thead><tbody>';
     s.rates.forEach(function (r, i) {
       h += '<tr><td>' + (i + 1) + '</td>' +
-        '<td><input inputmode="decimal" aria-label="' + (i + 1) + ' tai 1st rate" data-rate="' + i + ',0" value="' + esc(r[0]) + '"></td>' +
-        '<td><input inputmode="decimal" aria-label="' + (i + 1) + ' tai 2nd rate" data-rate="' + i + ',1" value="' + esc(r[1]) + '"></td></tr>';
+        '<td><input inputmode="decimal" aria-label="' + (i + 1) + ' 台 1st rate" data-rate="' + i + ',0" value="' + esc(r[0]) + '"></td>' +
+        '<td><input inputmode="decimal" aria-label="' + (i + 1) + ' 台 2nd rate" data-rate="' + i + ',1" value="' + esc(r[1]) + '"></td></tr>';
     });
     h += '</tbody></table><p class="hint">' + icon('info') + '<span>Editing any amount switches to Custom.</span></p></div>';
 
@@ -369,7 +369,7 @@
       '<label class="field"><span>杠 ($)</span><input inputmode="decimal" data-gang="gang" value="' + esc(s.gang) + '"></label>' +
       '<label class="field"><span>暗杠 ($)</span><input inputmode="decimal" data-gang="angang" value="' + esc(s.angang) + '"></label></div>' +
       '<button type="button" class="btn sm" style="margin-top:12px" data-act="gang-default">' + icon('reopen', 'sm') +
-      'Use 1 tai rates (' + money(s.rates[0][0]) + ' / ' + money(s.rates[0][1]) + ')</button></div>';
+      'Use 1 台 rates (' + money(s.rates[0][0]) + ' / ' + money(s.rates[0][1]) + ')</button></div>';
     if (s.error) h += '<p class="error">' + icon('alert', 'sm') + esc(s.error) + '</p>';
     h += '<button type="button" class="btn primary block" style="margin-top:16px" data-act="start">' + icon('play') + 'Start night</button>';
 
@@ -404,7 +404,7 @@
     var rates = [];
     for (var i = 0; i < s.rates.length; i++) {
       var a = parseMoney(s.rates[i][0]), b = parseMoney(s.rates[i][1]);
-      if (a === null || b === null) { s.error = 'Rate for ' + (i + 1) + ' tai must be a positive amount.'; return render(); }
+      if (a === null || b === null) { s.error = 'Rate for ' + (i + 1) + ' 台 must be a positive amount.'; return render(); }
       rates.push([a, b]);
     }
     var g = parseMoney(s.gang), ag = parseMoney(s.angang);

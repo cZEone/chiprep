@@ -53,7 +53,7 @@
       if (thrower === p) throw new Error('Thrower cannot be the winner');
     }
     var tai = Number(ev.tai);
-    if (t.needsTai && !(tai >= 1 && tai <= MAX_TAI)) throw new Error('Pick the tai');
+    if (t.needsTai && !(tai >= 1 && tai <= MAX_TAI)) throw new Error('Pick the 台');
 
     var i;
     switch (ev.type) {
