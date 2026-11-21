@@ -38,8 +38,17 @@ assert.deepStrictEqual(MJ.computeDeltas(s2, { type: 'discard', player: 0, throwe
 assert.deepStrictEqual(MJ.computeDeltas(settings, { type: 'discard', player: 0, thrower: 1, tai: 3, shooter: true }), [1100, -1100, 0, 0]);
 // Shooter mode does not change 自摸 or 杠
 assert.deepStrictEqual(MJ.computeDeltas(settings, { type: 'zimo', player: 0, tai: 1, shooter: true }), [600, -200, -200, -200]);
-assert.deepStrictEqual(MJ.computeDeltas(settings, { type: 'gang', player: 2, shooter: true }), [-100, -100, 300, -100]);
-// Validation
+// Shooter mode 杠: the thrower pays all three shares; 暗杠 is unchanged
+assert.deepStrictEqual(MJ.computeDeltas(settings, { type: 'gang', player: 2, thrower: 0, shooter: true }), [-300, 0, 300, 0]);
+assert.deepStrictEqual(MJ.computeDeltas(settings, { type: 'angang', player: 2, shooter: true }), [-200, -200, 600, -200]);
+assert.ok(MJ.needsThrower({ type: 'gang', shooter: true }) && !MJ.needsThrower({ type: 'gang' }) && !MJ.needsThrower({ type: 'angang', shooter: true }));
+// Older shooter 杠 hands saved without a thrower: everyone pays
+assert.deepStrictEqual(MJ.computeDeltas(settings, { type: 'gang', player: 2, thrower: null, shooter: true }), [-100, -100, 300, -100]);
+// Validation: nobody picked (null) must be rejected
+['gang', 'angang', 'zimo', 'zhahu'].forEach((type) =>
+  assert.throws(() => MJ.computeDeltas(settings, { type, player: null, thrower: null, tai: 1 }), /Pick a player/));
+assert.throws(() => MJ.computeDeltas(settings, { type: 'discard', player: 0, thrower: null, tai: 1 }), /Pick who threw/);
+assert.throws(() => MJ.computeDeltas(settings, { type: 'bao', player: 0, thrower: null }), /Pick who threw/);
 assert.throws(() => MJ.computeDeltas(settings, { type: 'discard', player: 0, thrower: 0, tai: 1 }));
 assert.throws(() => MJ.computeDeltas(settings, { type: 'zimo', player: 0 }));
 // Settle-up nets to zero

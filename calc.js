@@ -32,6 +32,15 @@
 
   function toCents(x) { return Math.round(Number(x) * 100); }
 
+  // A seat index 0-3. (Plain `x >= 0` is not enough: in JS `null >= 0` is true.)
+  function isSeat(x) { return typeof x === 'number' && x >= 0 && x < 4 && x % 1 === 0; }
+
+  /** Whether this hand needs a thrower. In shooter mode a 杠 is paid by whoever threw the tile. */
+  function needsThrower(ev) {
+    var t = TYPES[ev.type];
+    return !!t && (t.needsThrower || (ev.type === 'gang' && !!ev.shooter));
+  }
+
   /**
    * Compute the per-player change (in cents) for one event.
    * settings: { rates: [[first, second] x5] (dollars), gang: dollars, angang: dollars }
@@ -45,12 +54,12 @@
     var t = TYPES[ev.type];
     if (!t) throw new Error('Unknown event type: ' + ev.type);
     var p = ev.player;
-    if (!(p >= 0 && p < 4)) throw new Error('Pick a player');
+    if (!isSeat(p)) throw new Error('Pick a player');
     var d = [0, 0, 0, 0];
     var rate = function (tai, which) { return toCents(settings.rates[tai - 1][which]); };
     var thrower = ev.thrower;
     if (t.needsThrower) {
-      if (!(thrower >= 0 && thrower < 4)) throw new Error('Pick who threw the tile');
+      if (!isSeat(thrower)) throw new Error('Pick who threw the tile');
       if (thrower === p) throw new Error('Thrower cannot be the winner');
     }
     var tai = Number(ev.tai);
@@ -77,9 +86,12 @@
       case 'gang':
       case 'angang':
         var g = toCents(ev.type === 'gang' ? settings.gang : settings.angang);
+        // Shooter mode 杠: the player who threw the tile pays all three shares.
+        // (Hands saved before 杠 took a thrower have none; everyone pays for those.)
+        var gangPayer = ev.type === 'gang' && ev.shooter && isSeat(thrower) && thrower !== p ? thrower : null;
         for (i = 0; i < 4; i++) {
           if (i === p) continue;
-          d[i] -= g; d[p] += g;
+          d[gangPayer === null ? i : gangPayer] -= g; d[p] += g;
         }
         break;
       case 'bao':
@@ -164,7 +176,7 @@
     return (signed && cents > 0 ? '+$' : '$') + s;
   }
 
-  var api = { MAX_TAI: MAX_TAI, PRESETS: PRESETS, TYPES: TYPES, toCents: toCents,
+  var api = { MAX_TAI: MAX_TAI, PRESETS: PRESETS, TYPES: TYPES, toCents: toCents, isSeat: isSeat, needsThrower: needsThrower,
               computeDeltas: computeDeltas, totals: totals, stats: stats, settle: settle, fmt: fmt };
   if (typeof module !== 'undefined' && module.exports) module.exports = api;
   else root.MJ = api;

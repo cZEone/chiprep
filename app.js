@@ -110,9 +110,21 @@
   }
   function formEvent(n) {
     var f = ui.form, t = MJ.TYPES[f.type];
-    var rec = { type: f.type, player: f.player, thrower: t.needsThrower ? f.thrower : null, tai: t.needsTai ? f.tai : null };
-    if (shooterOn(n)) rec.shooter = true; // only discard wins are affected
+    var shooter = shooterOn(n);
+    var rec = { type: f.type, player: f.player,
+      thrower: MJ.needsThrower({ type: f.type, shooter: shooter }) ? f.thrower : null,
+      tai: t.needsTai ? f.tai : null };
+    if (shooter) rec.shooter = true; // affects discard wins and 杠
     return rec;
+  }
+  // Validate the form; returns { rec, deltas } or { err }.
+  function checkForm(n) {
+    var rec = formEvent(n);
+    try {
+      if (MJ.needsThrower(rec) && !MJ.isSeat(rec.thrower)) throw new Error('Pick who threw the tile');
+      if (MJ.isSeat(rec.thrower) && rec.thrower === rec.player) throw new Error('Thrower cannot be the same player');
+      return { rec: rec, deltas: MJ.computeDeltas(settingsOf(n), rec) };
+    } catch (e) { return { rec: rec, err: e.message }; }
   }
 
   function describe(n, ev) {
@@ -120,7 +132,7 @@
     switch (ev.type) {
       case 'discard': return P(ev.player) + ' won off ' + P(ev.thrower) + (ev.shooter ? ' · shooter' : '');
       case 'zimo': return P(ev.player) + ' 自摸';
-      case 'gang': return P(ev.player) + ' 杠';
+      case 'gang': return P(ev.player) + ' 杠' + (ev.shooter && MJ.isSeat(ev.thrower) ? ' off ' + P(ev.thrower) + ' · shooter' : '');
       case 'angang': return P(ev.player) + ' 暗杠';
       case 'bao': return P(ev.player) + ' won · 包 by ' + P(ev.thrower);
       case 'baolimit': return P(ev.player) + ' won · 包 Limit by ' + P(ev.thrower);
@@ -209,8 +221,8 @@
     });
     h += '</div>';
 
-    if (t.needsThrower) {
-      h += step(s++, 'Who threw the tile?', f.thrower !== null, f.type === 'discard' ? '' : 'pays for everyone');
+    if (MJ.needsThrower({ type: f.type, shooter: shooterOn(n) })) {
+      h += step(s++, 'Who threw the tile?', f.thrower !== null, f.type === 'discard' && !shooterOn(n) ? '' : 'pays for everyone');
       h += '<div class="choices c4">';
       n.players.forEach(function (p, i) {
         h += '<button type="button" class="chip person" data-thrower="' + i + '" aria-pressed="' + (f.thrower === i) + '"' +
@@ -235,7 +247,9 @@
         ? 'Shooter: thrower pays for everyone, 2nd rate + 2 × 1st rate.'
         : 'Thrower pays the 2nd rate, the other two pay the 1st rate.',
       zimo: 'All three pay the 2nd rate.',
-      gang: 'All three pay ' + money(n.gang) + '.',
+      gang: shooterOn(n)
+        ? 'Shooter: thrower pays all three shares, 3 × ' + money(n.gang) + '.'
+        : 'All three pay ' + money(n.gang) + '.',
       angang: 'All three pay ' + money(n.angang) + '.',
       bao: 'Thrower pays everything at 5 台: 2 × ' + money(n.rates[4][0]) + ' + ' + money(n.rates[4][1]) + '.',
       baolimit: 'Thrower pays everything at 5 台: 3 × ' + money(n.rates[4][1]) + '.',
@@ -244,7 +258,8 @@
     h += '<p class="hint">' + icon('info') + '<span>' + hint + '</span></p>';
 
     var deltas = null, err = null;
-    try { deltas = MJ.computeDeltas(settingsOf(n), formEvent(n)); } catch (e) { err = e.message; }
+    var chk = checkForm(n);
+    deltas = chk.deltas || null; err = chk.err || null;
     h += '<div class="submitbar"><div class="preview">';
     n.players.forEach(function (p, i) {
       var v = deltas ? deltas[i] : 0;
@@ -342,7 +357,7 @@
   }
   function shooterCard(on, act, note) {
     return '<div class="card toggle-card"><div class="toggle-text"><div class="section-title" style="margin:0 0 4px">' + icon('target') + 'Shooter mode</div>' +
-      '<div class="small muted">On a discard win the thrower pays for everyone (2nd rate + both 1st-rate shares).' +
+      '<div class="small muted">On a discard win or 杠, the thrower pays everyone\'s share.' +
       (note ? ' ' + note : '') + '</div></div>' +
       '<button type="button" class="switch" role="switch" aria-checked="' + on + '" aria-label="Shooter mode" data-act="' + act + '"><span></span></button></div>';
   }
@@ -382,6 +397,7 @@
     });
     h += '</div></div>';
 
+    h += shooterCard(s.shooter, 'setup-shooter');
     h += '<div class="card"><div class="section-title">' + icon('coins') + 'Rate</div><div class="choices c3">';
     Object.keys(MJ.PRESETS).forEach(function (k) {
       var r = MJ.PRESETS[k].rates[0];
@@ -403,7 +419,6 @@
       '<label class="field"><span>暗杠 ($)</span><input inputmode="decimal" data-gang="angang" value="' + esc(s.angang) + '"></label></div>' +
       '<button type="button" class="btn sm" style="margin-top:12px" data-act="gang-default">' + icon('reopen', 'sm') +
       'Use 1 台 rates (' + money(s.rates[0][0]) + ' / ' + money(s.rates[0][1]) + ')</button></div>';
-    h += shooterCard(s.shooter, 'setup-shooter');
     if (s.error) h += '<p class="error">' + icon('alert', 'sm') + esc(s.error) + '</p>';
     h += '<button type="button" class="btn primary block" style="margin-top:16px" data-act="start">' + icon('play') + 'Start night</button>';
 
@@ -471,7 +486,7 @@
     if (d.tab) { ui.tab = d.tab; render(); window.scrollTo(0, 0); return; }
     if (d.type) {
       f.type = d.type;
-      if (!MJ.TYPES[f.type].needsThrower) f.thrower = null;
+      if (!MJ.needsThrower({ type: f.type, shooter: shooterOn(n) })) f.thrower = null;
       if (!MJ.TYPES[f.type].needsTai) f.tai = null;
       return render();
     }
@@ -520,8 +535,9 @@
     switch (d.act) {
       case 'submit': {
         var deltas;
-        var rec = formEvent(n);
-        try { deltas = MJ.computeDeltas(settingsOf(n), rec); } catch (err) { return; }
+        var chk = checkForm(n);
+        if (chk.err) return;
+        var rec = chk.rec; deltas = chk.deltas;
         if (ui.editingId) {
           var ex = n.events.find(function (x) { return x.id === ui.editingId; });
           delete ex.shooter;
