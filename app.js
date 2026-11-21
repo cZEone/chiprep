@@ -38,11 +38,12 @@
   function icon(name, cls) {
     return '<svg class="ico' + (cls ? ' ' + cls : '') + '" viewBox="0 0 24 24" aria-hidden="true">' + ICONS[name] + '</svg>';
   }
-  var LOGO = '<svg class="logo" viewBox="0 0 38 46" aria-hidden="true">' +
-    '<rect x="1" y="4" width="36" height="41" rx="8" fill="#cbbd9a"/>' +
-    '<rect x="1" y="1" width="36" height="40" rx="8" fill="#fffaf0"/>' +
-    '<text x="19" y="29.5" text-anchor="middle" font-size="22" font-weight="800" fill="#c8372d" ' +
-    'font-family="PingFang SC, Hiragino Sans GB, Microsoft YaHei, Noto Sans SC, sans-serif">中</text></svg>';
+  var LOGO = '<svg class="logo" viewBox="0 0 120 120" aria-hidden="true">' +
+    '<rect width="120" height="120" rx="27" fill="#fffaf0"/>' +
+    '<rect x="16" y="16" width="88" height="88" rx="12" fill="#c8372d"/>' +
+    '<rect x="23" y="23" width="74" height="74" rx="8" fill="none" stroke="#fffaf0" stroke-width="3"/>' +
+    '<g font-size="31" font-weight="800" fill="#fffaf0" text-anchor="middle" font-family="PingFang SC, Hiragino Sans GB, Microsoft YaHei, Noto Sans CJK SC, Noto Sans SC, sans-serif">' +
+    '<text x="60" y="57">筹</text><text x="60" y="89">码</text></g></svg>';
 
   var DICE_BTN = '<button type="button" class="dice-btn" data-act="dice" aria-label="Roll dice">' +
     '<svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="4"/>' +
